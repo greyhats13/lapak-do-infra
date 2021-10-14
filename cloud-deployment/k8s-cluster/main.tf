@@ -29,6 +29,6 @@ module "k8s_cluster" {
     service  = "backend"
     priority = "high"
   }
-  node_taint = {}
+  node_taint = {} 
   namespaces = [ "dev", "stg", "lapak", "ingress", "cicd", "database" ]
 }

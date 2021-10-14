@@ -24,9 +24,13 @@ module "helm" {
   chart      = "redis"
   values     = []
   helm_sets = [
+    # {
+    #   name  = "auth.rootPassword"
+    #   value = var.redis_secrets["redisPassword"]
+    # },
     {
-      name  = "auth.rootPassword"
-      value = var.redis_secrets["redisPassword"]
+      name  = "auth.enabled"
+      value = false
     },
     {
       name  = "replica.replicaCount"
