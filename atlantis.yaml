@@ -1,0 +1,12 @@
+version: 3
+projects:
+  - dir: service-deployment/lapak-core-api
+    apply_requirements: ["approved","mergeable"]
+    autoplan:
+      when_modified: ["*.tf*"]
+      enabled: true
+  - dir: service_deployment/lapak-core-test
+    apply_requirements: ["approved","mergeable"]
+    autoplan:
+      when_modified: ["*.tf*"]
+      enabled: true

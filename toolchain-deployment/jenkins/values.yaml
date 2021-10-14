@@ -1,0 +1,86 @@
+clusterZone: "cluster.local"
+
+renderHelmLabels: true
+
+controller:
+  adminUser: "admin"
+  adminPassword: "admin123"
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1024Mi"
+  initContainerResources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1024Mi"
+  installPlugins:
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - configuration-as-code:latest
+    - workflow-job:latest
+    - credentials-binding:latest
+    - multibranch-action-triggers:latest
+    - multibranch-scan-webhook-trigger:latest
+    - pipeline-github:latest
+    - git-changelog:latest
+    - git-parameter:latest
+    - docker-workflow:latest
+  additionalSecrets:
+   - name: github_username
+     value: username
+   - name: github_token
+     value: token
+   - name: docker_username
+     value: username
+   - name: docker_token
+     value: token
+  JCasC:
+    defaultConfig: true
+    configScripts:
+      jenkins-casc-configs: |
+        credentials:
+          system:
+            domainCredentials:
+            - credentials:
+              - usernamePassword:
+                  description: "Github personal access token"
+                  id: "github_creds"
+                  username: ${github_username}
+                  password: ${github_token}
+                  scope: GLOBAL
+              - usernamePassword:
+                  description: "Docker Hub access token"
+                  id: "docker_creds"
+                  username: ${docker_username}
+                  password: ${docker_token}
+                  scope: GLOBAL
+  ingress:
+    enabled: true
+    apiVersion: "networking.k8s.io/v1"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      cert-manager.io/cluster-issuer: letsencrypt-lapak
+      ingressClassName: nginx
+    hostName: jenkins.toolchain.blast.co.id
+    tls:
+      - secretName: lapak-toolchain-jenkins-tls
+        hosts:
+          - jenkins.toolchain.blast.co.id
+agent:
+  resources:
+    requests:
+      cpu: "256m"
+      memory: "256Mi"
+    limits:
+      cpu: "512m"
+      memory: "512Mi"
+persistence:
+  size: "5Gi"
